@@ -17,8 +17,12 @@ flags.DEFINE_boolean('tiny', False, 'yolo or yolo-tiny')
 def main(_argv):
     physical_devices = tf.config.experimental.list_physical_devices('GPU')
     if len(physical_devices) > 0:
-        tf.config.experimental.set_memory_growth(physical_devices[0], True)
-
+        #handle exception
+        try:
+          tf.config.experimental.set_memory_growth(physical_devices[0], True)
+        except RuntimeError as e:
+          #RuntimeError: Physical devices cannot be modified after being initialized
+          print(e)
     trainset = Dataset(FLAGS, is_training=True)
     testset = Dataset(FLAGS, is_training=False)
     logdir = "./data/log"
